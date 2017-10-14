@@ -1,0 +1,81 @@
+---
+title: "homework 04"
+author: "Isabella Muratore"
+output:
+  html_document: default
+  html_notebook: default
+---
+# homework 04
+
+## [1] Write a simple R function, Z.prop.test(), that can perform one- or two-sample Z-tests for proportion data, using the following guidelines.
+```{r}
+Z.prop.test <- function(p1,p2=NULL,n1,n2=NULL,p0,alternative="two.sided",correct=TRUE,conf.level=0.95){
+  if (alternative = "two.sided"){
+    if (is.null(p2) | is.null(n2)){
+      if ((n1*p1<5) | (n1*(1−p1)<5)){
+        message("Warning, n*p and n*p-1 should be greater than 5")
+      }
+      #prop.test(x = p1, n = n1, p = p0, alternative = alternative, correct = correct)
+      phat <- mean(p1)
+      z <- (phat - p0)/sqrt(p0 * (1 - p0)/n1)
+
+      p <- pnorm(z, lower.tail = TRUE)
+
+      lower <- phat - qnorm(conf.level) * sqrt(phat * (1 - phat)/n1)
+      upper <- phat + qnorm(conf.level) * sqrt(phat * (1 - phat)/n1)
+      ci <- c(lower, upper)
+
+    } else {
+      if ((n1*p1<5) | (n1*(1−p1)<5) | (n2*p2<5) | (n2*(1−p2)<5)){
+        message("Warning, n*p and n*p-1 should be greater than 5")
+      }
+      #prop.test(x = c(p1, p2), n = c(n1, n2), alternative = alternative, correct = correct)
+      pstar <- (sum(p1) + sum(p2))/(n1 + n2)
+
+      phat1 <- mean(p1)
+
+      phat2 <- mean(p2)
+
+      z <- (phat2 - phat1)/sqrt((pstar * (1 - pstar)) * (1/n1 + 1/n2))
+
+      p <- 1 - pnorm(z, lower.tail = TRUE) + pnorm(z, lower.tail = FALSE)
+
+      lower <- (p2-p1) - qnorm(conf.level) * sqrt((p2-p1) * (1 - (p2-p1))/(n2-n1))
+      upper <- (p2-p1) + qnorm(conf.level) * sqrt((p2-p1) * (1 - (p2-p1))/(n2-n1))
+      ci <- c(lower, upper)
+
+    } 
+    
+  } else {
+    if (is.null(p2) | is.null(n2)){
+      if ((n1*p1<5) | (n1*(1−p1)<5)){
+        message("Warning, n*p and n*p-1 should be greater than 5")
+      }
+      #prop.test(x = p1, n = n1, p = p0, alternative = alternative, correct = correct)
+      phat <- mean(p1)
+      z <- (phat - p0)/sqrt(p0 * (1 - p0)/n1)
+
+      p <- pnorm(z, lower.tail = TRUE)
+
+      lower <- phat - qnorm(conf.level) * sqrt(phat * (1 - phat)/n1)
+      upper <- phat + qnorm(conf.level) * sqrt(phat * (1 - phat)/n1)
+      ci <- c(lower, upper)
+
+      output <- list("z", z, "p", p, "ci", ci)
+      output
+    } else {
+      if ((n1*p1<5) | (n1*(1−p1)<5) | (n2*p2<5) | (n2*(1−p2)<5)){
+        message("Warning, n*p and n*p-1 should be greater than 5")
+      }
+      #prop.test(x = c(p1, p2), n = c(n1, n2), alternative = alternative, correct = correct)
+    }
+    
+  }
+  
+  output <- list("z", z, "p", p, "ci", ci)
+  output
+  
+}
+
+```
+
