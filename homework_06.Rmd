@@ -19,29 +19,30 @@ Z.prop.test <- function(p1,p2=NULL,n1,n2=NULL,p0,alternative="two.sided",correct
       phat <- mean(p1)
       z <- (phat - p0)/sqrt(p0 * (1 - p0)/n1)
 
-      p <- pnorm(z, lower.tail = TRUE)
+      p <- 1- pnorm(z, lower.tail = TRUE) + pnorm(z, lower.tail = FALSE)
 
       lower <- phat - qnorm(conf.level) * sqrt(phat * (1 - phat)/n1)
       upper <- phat + qnorm(conf.level) * sqrt(phat * (1 - phat)/n1)
       ci <- c(lower, upper)
 
     } else {
-      if ((n1*p1<5) | (n1*(1−p1)<5) | (n2*p2<5) | (n2*(1−p2)<5)){
+      if ((n1*p1<5) || (n1*(1−p1)<5) || (n2*p2<5) || (n2*(1−p2)<5)){
         message("Warning, n*p and n*p-1 should be greater than 5")
       }
       #prop.test(x = c(p1, p2), n = c(n1, n2), alternative = alternative, correct = correct)
+
       pstar <- (sum(p1) + sum(p2))/(n1 + n2)
 
       phat1 <- mean(p1)
 
       phat2 <- mean(p2)
 
-      z <- (phat2 - phat1)/sqrt((pstar * (1 - pstar)) * (1/n1 + 1/n2))
+      z <- (phat1 - phat2)/sqrt((pstar * (1 - pstar)) * (1/n1 + 1/n2))
 
-      p <- 1 - pnorm(z, lower.tail = TRUE) + pnorm(z, lower.tail = FALSE)
+      p <- 1- pnorm(z, lower.tail = TRUE) + pnorm(z, lower.tail = FALSE)
 
-      lower <- (p2-p1) - qnorm(conf.level) * sqrt((p2-p1) * (1 - (p2-p1))/(n2-n1))
-      upper <- (p2-p1) + qnorm(conf.level) * sqrt((p2-p1) * (1 - (p2-p1))/(n2-n1))
+      lower <- (p2-p1) - qnorm(conf.level) * sqrt((p1*(1-p1)/n1)+((p2*1-p2)/n2))
+      upper <- (p2-p1) + qnorm(conf.level) * sqrt((p1*(1-p1)/n1)+((p2*1-p2)/n2))
       ci <- c(lower, upper)
 
     } 
@@ -51,23 +52,65 @@ Z.prop.test <- function(p1,p2=NULL,n1,n2=NULL,p0,alternative="two.sided",correct
       if ((n1*p1<5) | (n1*(1−p1)<5)){
         message("Warning, n*p and n*p-1 should be greater than 5")
       }
-      #prop.test(x = p1, n = n1, p = p0, alternative = alternative, correct = correct)
-      phat <- mean(p1)
-      z <- (phat - p0)/sqrt(p0 * (1 - p0)/n1)
+      if (alternative == "greater"){
+        #prop.test(x = p1, n = n1, p = p0, alternative = alternative, correct = correct)
+        phat <- mean(p1)
+        z <- (phat - p0)/sqrt(p0 * (1 - p0)/n1)
 
-      p <- pnorm(z, lower.tail = TRUE)
+        p <- pnorm(z, lower.tail = FALSE)
 
-      lower <- phat - qnorm(conf.level) * sqrt(phat * (1 - phat)/n1)
-      upper <- phat + qnorm(conf.level) * sqrt(phat * (1 - phat)/n1)
-      ci <- c(lower, upper)
+        lower <- phat - qnorm(conf.level) * sqrt(phat * (1 - phat)/n1)
+        upper <- phat + qnorm(conf.level) * sqrt(phat * (1 - phat)/n1)
+        ci <- c(lower, upper)
 
-      output <- list("z", z, "p", p, "ci", ci)
-      output
+      } else {
+        #prop.test(x = p1, n = n1, p = p0, alternative = alternative, correct = correct)
+        phat <- mean(p1)
+        z <- (phat - p0)/sqrt(p0 * (1 - p0)/n1)
+
+        p <- pnorm(z, lower.tail = TRUE)
+
+        lower <- phat - qnorm(conf.level) * sqrt(phat * (1 - phat)/n1)
+        upper <- phat + qnorm(conf.level) * sqrt(phat * (1 - phat)/n1)
+        ci <- c(lower, upper)
+
+      }
+      
     } else {
-      if ((n1*p1<5) | (n1*(1−p1)<5) | (n2*p2<5) | (n2*(1−p2)<5)){
+      if ((n1*p1<5) || (n1*(1−p1)<5) || (n2*p2<5) || (n2*(1−p2)<5)){
         message("Warning, n*p and n*p-1 should be greater than 5")
       }
       #prop.test(x = c(p1, p2), n = c(n1, n2), alternative = alternative, correct = correct)
+      if (alternative == "greater"){
+        pstar <- (sum(p1) + sum(p2))/(n1 + n2)
+
+        phat1 <- mean(p1)
+
+        phat2 <- mean(p2)
+
+        z <- (phat1 - phat2)/sqrt((pstar * (1 - pstar)) * (1/n1 + 1/n2))
+
+        p <- pnorm(z, lower.tail = FALSE)
+
+        lower <- (p2-p1) - qnorm(conf.level) * sqrt((p1*(1-p1)/n1)+((p2*1-p2)/n2))
+        upper <- (p2-p1) + qnorm(conf.level) * sqrt((p1*(1-p1)/n1)+((p2*1-p2)/n2))
+        ci <- c(lower, upper)
+      } else{
+        pstar <- (sum(p1) + sum(p2))/(n1 + n2)
+
+        phat1 <- mean(p1)
+
+        phat2 <- mean(p2)
+
+        z <- (phat1 - phat2)/sqrt((pstar * (1 - pstar)) * (1/n1 + 1/n2))
+
+        p <- pnorm(z, lower.tail = TRUE)
+
+        lower <- (p2-p1) - qnorm(conf.level) * sqrt((p1*(1-p1)/n1)+((p2*1-p2)/n2))
+        upper <- (p2-p1) + qnorm(conf.level) * sqrt((p1*(1-p1)/n1)+((p2*1-p2)/n2))
+        ci <- c(lower, upper)
+      }
+
     }
     
   }
@@ -78,4 +121,24 @@ Z.prop.test <- function(p1,p2=NULL,n1,n2=NULL,p0,alternative="two.sided",correct
 }
 
 ```
+##
 
+```{r}
+
+library(curl)
+library(ggplot2)
+f <- curl("https://raw.githubusercontent.com/fuzzyatelin/fuzzyatelin.github.io/master/AN597_Fall17/KamilarAndCooperData.csv")
+d <- read.csv(f, header = TRUE, sep = ",", stringsAsFactors = FALSE)
+m <- lm(MaxLongevity_m ~ Brain_Size_Species_Mean, data = d)
+g <- ggplot(data = d, aes(x = MaxLongevity_m, y = Brain_Size_Species_Mean))
+g <- g + geom_point()
+g <- g + geom_smooth(method = "lm", formula = y ~ x)
+g
+
+
+m <- lm(log(MaxLongevity_m) ~ log(Brain_Size_Species_Mean), data = d)
+g <- ggplot(data = d, aes(x = log(MaxLongevity_m), y = log(Brain_Size_Species_Mean)))
+g <- g + geom_point()
+g <- g + geom_smooth(method = "lm", formula = y ~ x)
+g
+```
