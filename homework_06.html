@@ -158,8 +158,8 @@ $(document).ready(function () {
 
       p &lt;- 1- pnorm(z, lower.tail = TRUE) + pnorm(z, lower.tail = FALSE)
 
-      lower &lt;- (p2-p1) - qnorm(conf.level) * sqrt((p1*(1-p1)/n1)+((p2*1-p2)/n2))
-      upper &lt;- (p2-p1) + qnorm(conf.level) * sqrt((p1*(1-p1)/n1)+((p2*1-p2)/n2))
+        lower &lt;- (p2-p1) - qnorm(conf.level) * sqrt(p1*(1-p1)/n1+p2*(1-p2)/n2)
+        upper &lt;- (p2-p1) + qnorm(conf.level) * sqrt(p1*(1-p1)/n1+p2*(1-p2)/n2)
       ci &lt;- c(lower, upper)
 
     } 
@@ -209,8 +209,8 @@ $(document).ready(function () {
 
         p &lt;- pnorm(z, lower.tail = FALSE)
 
-        lower &lt;- (p2-p1) - qnorm(conf.level) * sqrt((p1*(1-p1)/n1)+((p2*1-p2)/n2))
-        upper &lt;- (p2-p1) + qnorm(conf.level) * sqrt((p1*(1-p1)/n1)+((p2*1-p2)/n2))
+        lower &lt;- (p2-p1) - qnorm(conf.level) * sqrt(p1*(1-p1)/n1+p2*(1-p2)/n2)
+        upper &lt;- (p2-p1) + qnorm(conf.level) * sqrt(p1*(1-p1)/n1+p2*(1-p2)/n2)
         ci &lt;- c(lower, upper)
       } else{
         pstar &lt;- (sum(p1) + sum(p2))/(n1 + n2)
@@ -222,9 +222,9 @@ $(document).ready(function () {
         z &lt;- (phat1 - phat2)/sqrt((pstar * (1 - pstar)) * (1/n1 + 1/n2))
 
         p &lt;- pnorm(z, lower.tail = TRUE)
-
-        lower &lt;- (p2-p1) - qnorm(conf.level) * sqrt((p1*(1-p1)/n1)+((p2*1-p2)/n2))
-        upper &lt;- (p2-p1) + qnorm(conf.level) * sqrt((p1*(1-p1)/n1)+((p2*1-p2)/n2))
+        
+        lower &lt;- (p2-p1) - qnorm(conf.level) * sqrt(p1*(1-p1)/n1+p2*(1-p2)/n2)
+        upper &lt;- (p2-p1) + qnorm(conf.level) * sqrt(p1*(1-p1)/n1+p2*(1-p2)/n2)
         ci &lt;- c(lower, upper)
       }
 

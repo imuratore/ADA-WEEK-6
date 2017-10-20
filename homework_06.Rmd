@@ -41,8 +41,8 @@ Z.prop.test <- function(p1,p2=NULL,n1,n2=NULL,p0,alternative="two.sided",correct
 
       p <- 1- pnorm(z, lower.tail = TRUE) + pnorm(z, lower.tail = FALSE)
 
-      lower <- (p2-p1) - qnorm(conf.level) * sqrt((p1*(1-p1)/n1)+((p2*1-p2)/n2))
-      upper <- (p2-p1) + qnorm(conf.level) * sqrt((p1*(1-p1)/n1)+((p2*1-p2)/n2))
+        lower <- (p2-p1) - qnorm(conf.level) * sqrt(p1*(1-p1)/n1+p2*(1-p2)/n2)
+        upper <- (p2-p1) + qnorm(conf.level) * sqrt(p1*(1-p1)/n1+p2*(1-p2)/n2)
       ci <- c(lower, upper)
 
     } 
@@ -92,8 +92,8 @@ Z.prop.test <- function(p1,p2=NULL,n1,n2=NULL,p0,alternative="two.sided",correct
 
         p <- pnorm(z, lower.tail = FALSE)
 
-        lower <- (p2-p1) - qnorm(conf.level) * sqrt((p1*(1-p1)/n1)+((p2*1-p2)/n2))
-        upper <- (p2-p1) + qnorm(conf.level) * sqrt((p1*(1-p1)/n1)+((p2*1-p2)/n2))
+        lower <- (p2-p1) - qnorm(conf.level) * sqrt(p1*(1-p1)/n1+p2*(1-p2)/n2)
+        upper <- (p2-p1) + qnorm(conf.level) * sqrt(p1*(1-p1)/n1+p2*(1-p2)/n2)
         ci <- c(lower, upper)
       } else{
         pstar <- (sum(p1) + sum(p2))/(n1 + n2)
@@ -105,9 +105,9 @@ Z.prop.test <- function(p1,p2=NULL,n1,n2=NULL,p0,alternative="two.sided",correct
         z <- (phat1 - phat2)/sqrt((pstar * (1 - pstar)) * (1/n1 + 1/n2))
 
         p <- pnorm(z, lower.tail = TRUE)
-
-        lower <- (p2-p1) - qnorm(conf.level) * sqrt((p1*(1-p1)/n1)+((p2*1-p2)/n2))
-        upper <- (p2-p1) + qnorm(conf.level) * sqrt((p1*(1-p1)/n1)+((p2*1-p2)/n2))
+        
+        lower <- (p2-p1) - qnorm(conf.level) * sqrt(p1*(1-p1)/n1+p2*(1-p2)/n2)
+        upper <- (p2-p1) + qnorm(conf.level) * sqrt(p1*(1-p1)/n1+p2*(1-p2)/n2)
         ci <- c(lower, upper)
       }
 
