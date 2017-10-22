@@ -15,6 +15,7 @@ output:
 Z.prop.test <- function(p1,p2=NULL,n1,n2=NULL,p0,alternative="two.sided",correct=TRUE,conf.level=0.95){
   if (alternative == "two.sided"){
     if (is.null(p2) | is.null(n2)){
+      #defining mean of the values in p1
       phat <- mean(p1)
       
       if ((n1*phat1<5) | (n1*(1−phat1)<5)){
@@ -24,10 +25,13 @@ Z.prop.test <- function(p1,p2=NULL,n1,n2=NULL,p0,alternative="two.sided",correct
       #two-sided test with one sample
       phat <- mean(p1)
       
+      #z statistic
       z <- (phat - p0)/sqrt(p0 * (1 - p0)/n1)
-
+      
+      #p value
       p <- 1- pnorm(z, lower.tail = TRUE) + pnorm(z, lower.tail = FALSE)
-
+      
+      #confidence interval
       lower <- phat - qnorm(conf.level) * sqrt(phat * (1 - phat)/n1)
       upper <- phat + qnorm(conf.level) * sqrt(phat * (1 - phat)/n1)
       ci <- c(lower, upper)
@@ -49,12 +53,12 @@ Z.prop.test <- function(p1,p2=NULL,n1,n2=NULL,p0,alternative="two.sided",correct
 
       phat2 <- mean(p2)
 
-      z <- (phat1 - phat2)/sqrt((pstar * (1 - pstar)) * (1/n1 + 1/n2))
+      z <- (phat2 - phat1)/sqrt(pstar * (1 - pstar) * (1/n1 + 1/n2))
 
       p <- 1- pnorm(z, lower.tail = TRUE) + pnorm(z, lower.tail = FALSE)
 
-        lower <- (phat2-phat1) - qnorm(conf.level) * sqrt(phat1*(1-phat1)/n1+phat2*(1-phat2)/n2)
-        upper <- (phat2-phat1) + qnorm(conf.level) * sqrt(phat1*(1-phat1)/n1+phat2*(1-phat2)/n2)
+      lower <- (phat2-phat1) - qnorm(conf.level) * sqrt(phat1*(1-phat1)/n1+phat2*(1-phat2)/n2)
+      upper <- (phat2-phat1) + qnorm(conf.level) * sqrt(phat1*(1-phat1)/n1+phat2*(1-phat2)/n2)
       ci <- c(lower, upper)
 
     } 
@@ -62,11 +66,11 @@ Z.prop.test <- function(p1,p2=NULL,n1,n2=NULL,p0,alternative="two.sided",correct
   } else {
     if (is.null(p2) | is.null(n2)){
       phat <- mean(p1)
-      if ((n1*p1<5) | (n1*(1−p1)<5)){
+      if ((n1*phat1<5) | (n1*(1−phat1)<5)){
         message("Warning, n*p and n*p-1 should be greater than 5")
       }
       if (alternative == "greater"){
-        #prop.test(x = p1, n = n1, p = p0, alternative = alternative, correct = correct)
+        #one-sided greater than test with one sample
         phat <- mean(p1)
         
         z <- (phat - p0)/sqrt(p0 * (1 - p0)/n1)
@@ -78,7 +82,7 @@ Z.prop.test <- function(p1,p2=NULL,n1,n2=NULL,p0,alternative="two.sided",correct
         ci <- c(lower, upper)
 
       } else {
-        #prop.test(x = p1, n = n1, p = p0, alternative = alternative, correct = correct)
+        #one-sided less than test with one sample
         phat <- mean(p1)
         
         z <- (phat - p0)/sqrt(p0 * (1 - p0)/n1)
@@ -96,10 +100,10 @@ Z.prop.test <- function(p1,p2=NULL,n1,n2=NULL,p0,alternative="two.sided",correct
 
       phat2 <- mean(p2)
       
-      if ((n1*p1<5) || (n1*(1−p1)<5) || (n2*p2<5) || (n2*(1−p2)<5)){
+      if ((n1*phat1<5) || (n1*(1−phat1)<5) || (n2*phat2<5) || (n2*(1−phat2)<5)){
         message("Warning, n*p and n*p-1 should be greater than 5")
       }
-      #prop.test(x = c(p1, p2), n = c(n1, n2), alternative = alternative, correct = correct)
+      #one-sided greater than test with two samples
       if (alternative == "greater"){
         pstar <- (sum(p1) + sum(p2))/(n1 + n2)
 
@@ -107,7 +111,7 @@ Z.prop.test <- function(p1,p2=NULL,n1,n2=NULL,p0,alternative="two.sided",correct
 
         phat2 <- mean(p2)
 
-        z <- (phat1 - phat2)/sqrt((pstar * (1 - pstar)) * (1/n1 + 1/n2))
+        z <- (phat2 - phat1)/sqrt(pstar * (1 - pstar) * (1/n1 + 1/n2))
 
         p <- pnorm(z, lower.tail = FALSE)
 
@@ -115,13 +119,14 @@ Z.prop.test <- function(p1,p2=NULL,n1,n2=NULL,p0,alternative="two.sided",correct
         upper <- (phat2-phat1) + qnorm(conf.level) * sqrt(phat1*(1-phat1)/n1+phat2*(1-phat2)/n2)
         ci <- c(lower, upper)
       } else{
+        #one-sided less than test with two samples
         pstar <- (sum(p1) + sum(p2))/(n1 + n2)
 
         phat1 <- mean(p1)
 
         phat2 <- mean(p2)
 
-        z <- (phat1 - phat2)/sqrt((pstar * (1 - pstar)) * (1/n1 + 1/n2))
+        z <- (phat2 - phat1)/sqrt(pstar * (1 - pstar) * (1/n1 + 1/n2))
 
         p <- pnorm(z, lower.tail = TRUE)
         
@@ -133,7 +138,7 @@ Z.prop.test <- function(p1,p2=NULL,n1,n2=NULL,p0,alternative="two.sided",correct
     }
     
   }
-  
+  #returning list of parameters preceded by their names
   output <- list("z", z, "p", p, "ci", ci)
   output
   
@@ -144,15 +149,18 @@ Z.prop.test <- function(p1,p2=NULL,n1,n2=NULL,p0,alternative="two.sided",correct
 
 
 ```{r}
-
+#importing data set
 library(curl)
 library(ggplot2)
 f <- curl("https://raw.githubusercontent.com/fuzzyatelin/fuzzyatelin.github.io/master/AN597_Fall17/KamilarAndCooperData.csv")
+#making data frame
 d <- read.csv(f, header = TRUE, sep = ",", stringsAsFactors = FALSE)
+#creating model I linear model for longevity by brain size
 m <- lm(MaxLongevity_m ~ Brain_Size_Species_Mean, data = d)
+m
+#plotting the linear model, adding scatterpoints, adding linear model line and 90% prediction intervals, adding text describing linear model using slope and intercept generated by lm()
 g <- ggplot(data = d, aes(x = Brain_Size_Species_Mean, y = MaxLongevity_m))
 g <- g + geom_point()
-g <- g + geom_smooth(method = "lm", formula = y ~ x, level=0.90)
 g <- g + geom_smooth(method = "lm", formula = y ~ x, level=0.90)
 g <- g + annotate("text", x=300, y=350, label= "y = 1.218*x + 248.952")
 g
@@ -165,7 +173,8 @@ m
 ```
 ###
 ```{r}
-library(lmodel2)
+
+#finding conf. intervals at 90% and 10% for the slope parameter (multiple parameters are outputted)
 
 mI <- confint.lm(object=m, level=0.80)
 
@@ -179,7 +188,10 @@ ci
 ```
 
 ```{r}
+
 m <- lm(MaxLongevity_m ~ Brain_Size_Species_Mean, data = d)
+
+#making point prediction for y value based on x value, here 800 for x value, based on the linear model for the longevity by brain size
 
 ci_800 <- predict(m, newdata = data.frame(Brain_Size_Species_Mean = 800), interval = "confidence", 
     level = 0.90) 
@@ -190,8 +202,9 @@ ci_800
 
 
 ```{r}
-
+#creating model I linear model for log of longevity by brain size
 m <- lm(log(MaxLongevity_m) ~ log(Brain_Size_Species_Mean), data = d)
+#plotting the linear model, adding scatterpoints, adding linear model line and 90% prediction intervals, adding text describing linear model using slope and intercept generated by lm()
 g <- ggplot(data = d, aes(x = log(Brain_Size_Species_Mean), y = log(MaxLongevity_m)))
 g <- g + geom_point()
 g <- g + geom_smooth(method = "lm", formula = y ~ x, level=0.90)
@@ -219,6 +232,8 @@ ci
 
 ```{r}
 m <- lm(log(MaxLongevity_m) ~ log(Brain_Size_Species_Mean), data = d)
+
+#making point prediction for y value based on x value, here 800 for x value, based on the linear model for the log of longevity by brain size
 
 ci_800 <- predict(m, newdata = data.frame(Brain_Size_Species_Mean = 800), interval = "confidence", 
     level = 0.90) 
