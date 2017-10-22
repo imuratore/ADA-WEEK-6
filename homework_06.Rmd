@@ -191,15 +191,16 @@ ci
 
 m <- lm(MaxLongevity_m ~ Brain_Size_Species_Mean, data = d)
 
-#making point prediction for y value based on x value, here 800 for x value, based on the linear model for the longevity by brain size
+#making confidence interval and prediction for y value based on x value, here 800 for x value, based on the linear model for the longevity by brain size
 
 ci_800 <- predict(m, newdata = data.frame(Brain_Size_Species_Mean = 800), interval = "confidence", 
     level = 0.90) 
 
 ci_800
 
-```
 
+```
+### prediction = 1223.345 months, ci = 1089.461-1357.228
 
 ```{r}
 #creating model I linear model for log of longevity by brain size
@@ -211,13 +212,13 @@ g <- g + geom_smooth(method = "lm", formula = y ~ x, level=0.90)
 g <- g + annotate("text", x=3.75, y=5, label= "y = 0.2341*x + 4.8790")
 g 
 ```
-###
+### It appear that the log model fits the data better because rather than showing a clump of points with a few outliers, here the points are relatively evenly distributed over the plot, such that the prediction interval can remain slim across its whole length because there are enough points at each location to make these predictions accurate.
 ```{r}
 m
 
 # β1 (slope coefficient) = 0.2341
 ```
-###
+### Finding the confidence interval for the slope parameter under the log model
 ```{r}
 mI <- confint.lm(object=m, level=0.80)
 
@@ -229,7 +230,7 @@ ci <- c(0.2112063, 0.2570929)
 
 ci
 ```
-
+### Using the log model find prediction and confidence interval for  longevity for a species with average brain mass of 800g.
 ```{r}
 m <- lm(log(MaxLongevity_m) ~ log(Brain_Size_Species_Mean), data = d)
 
@@ -240,6 +241,32 @@ ci_800 <- predict(m, newdata = data.frame(Brain_Size_Species_Mean = 800), interv
 
 ci_800
 
+#adjusting returned values to get number of months from log number of months
+
+prediction <- exp(6.44415)
+prediction
+lower <- exp(6.348235)
+upper <- exp(6.540065)
+ci <- c(lower,upper)
+ci
+
+```
+### The predicted values are for the log of longevity in months, so the predictions are returned as the log of the actual number of months. Taking the inverse log of these values yields 629.0118 as the prediction of longevity, between 571.4832 and 692.3316. This is lower than the prediction using the non-log model.
+
+## Do you trust the model to predict observations accurately for this value of the explanatory variable? Why or why not?
+
+### I do not very much trust these models to predict longevity for an 800g brain because 800 is well past the last x value included in this data set, so the relationship could change after this point and for example, flatten off since animals are not going to live forever even with large brains. 
+
+## Looking at your two models, which do you think is better? Why?
+
+### Copied from above:  It appear that the log model fits the data better because rather than showing a clump of points with a few outliers, here the points are relatively evenly distributed over the plot, such that the prediction interval can remain slim across its whole length because there are enough points at each location to make these predictions accurate.
+
+### ALSO, taking the correlation between the complete pairwise data for these variables shows a stronger correlation for the log model, so this model has better predictive ability:
+
+```{r}
+cor(d$Brain_Size_Female_Mean,d$MaxLongevity_m, use="pairwise.complete.obs")
+
+cor(log(d$Brain_Size_Female_Mean),log(d$MaxLongevity_m), use="pairwise.complete.obs")
 ```
 
 
