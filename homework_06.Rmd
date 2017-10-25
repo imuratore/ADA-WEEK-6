@@ -198,7 +198,9 @@ g <- g + geom_line(aes(x = d$Brain_Size_Species_Mean, y = CIupr), colour = "blue
 g <- g + geom_line(data = d, aes(x = d$Brain_Size_Species_Mean, y = PIlwr), colour = "red")
 g <- g + geom_line(data = d, aes(x = d$Brain_Size_Species_Mean, y = PIupr), colour = "red")
 g <- g + annotate("text", x=300, y=350, label= "y = 1.218*x + 248.952 red=predict, blue/gray=confidence")
+
 g
+
 
 
 ```
@@ -290,7 +292,9 @@ g <- g + geom_line(aes(x = log(d$Brain_Size_Species_Mean), y = CIupr), colour = 
 g <- g + geom_line(data = d, aes(x = log(d$Brain_Size_Species_Mean), y = PIlwr), colour = "red")
 g <- g + geom_line(data = d, aes(x = log(d$Brain_Size_Species_Mean), y = PIupr), colour = "red")
 g <- g + annotate("text", x=4, y=4.75, label= "y = 0.2341*x+4.8790 red=predict, black/gray=confidence")
+
 g
+
 
 ```
 
